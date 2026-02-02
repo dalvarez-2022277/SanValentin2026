@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Para el amor de mi vida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 182, 193, 0.4) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(255, 105, 180, 0.25) 0%, transparent 45%),
+        radial-gradient(ellipse 50% 35% at 80% 70%, rgba(255, 20, 147, 0.2) 0%, transparent 45%),
+        linear-gradient(180deg, #fef5f6 0%, #fde8eb 25%, #fcdde3 50%, #f9d0d8 75%, #f5c4cd 100%);
+      color: #3a3a3a;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Formas de fondo suaves (bokeh / ambiente) */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle 120px at 15% 20%, rgba(255, 182, 193, 0.35) 0%, transparent 100%),
+        radial-gradient(circle 100px at 85% 15%, rgba(255, 105, 180, 0.3) 0%, transparent 100%),
+        radial-gradient(circle 80px at 50% 90%, rgba(255, 20, 147, 0.2) 0%, transparent 100%),
+        radial-gradient(circle 90px at 75% 55%, rgba(255, 192, 203, 0.28) 0%, transparent 100%),
+        radial-gradient(circle 70px at 25% 60%, rgba(255, 105, 180, 0.22) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Pequeños “brillos” discretos en el fondo */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255, 105, 180, 0.35) 0%, transparent 100%),
+        radial-gradient(2px 2px at 40% 15%, rgba(255, 20, 147, 0.28) 0%, transparent 100%),
+        radial-gradient(2px 2px at 60% 80%, rgba(255, 182, 193, 0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 80% 45%, rgba(255, 105, 180, 0.3) 0%, transparent 100%),
+        radial-gradient(2px 2px at 10% 70%, rgba(255, 20, 147, 0.25) 0%, transparent 100%),
+        radial-gradient(2px 2px at 90% 85%, rgba(255, 182, 193, 0.32) 0%, transparent 100%),
+        radial-gradient(3px 3px at 30% 55%, rgba(255, 105, 180, 0.28) 0%, transparent 100%),
+        radial-gradient(3px 3px at 70% 25%, rgba(255, 192, 203, 0.35) 0%, transparent 100%);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      pointer-events: none;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-right: 1rem;
+      z-index: 2;
+    }
+
+    .right-side {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      animation: gradientShift 3s ease infinite;
+      background-size: 200% 200%;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .text-block p {
+      font-size: 0.9rem;
+      font-weight: 400;
+      line-height: 1.7;
+      color: #3a3a3a;
+      margin-bottom: 0.5rem;
+    }
+
+    .text-block .love-note {
+      margin-top: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ff1493;
+      text-align: center;
+    }
+
+
+    .text-block .typing-text {
+      min-height: 1.5em;
+    }
+
+
+
+    /* ÁRBOL */
+    .heart-tree {
+      position: relative;
+      width: 240px;
+      height: 300px;
+    }
+
+    .tree-canvas {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      height: 300px;
+    }
+
+    /* Partículas de corazones cayendo */
+    .falling-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 5;
+      font-size: 0.9rem;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    @keyframes fallDown {
+      0% {
+        opacity: 0.8;
+        transform: translateY(0) translateX(0) rotate(var(--initial-rotation, 0deg)) scale(1);
+      }
+      50% {
+        opacity: 0.6;
+        transform: translateY(50vh) translateX(calc(var(--drift, 0px) * 0.5)) rotate(calc(var(--total-rotation, 720deg) * 0.5)) scale(0.8);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(var(--drift, 0px)) rotate(var(--total-rotation, 720deg)) scale(0.5);
+      }
+    }
+
+    /* CONTADOR */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #ccc;
+      margin: 1.5rem 0 1rem;
+    }
+
+    .counter-section {
+      margin-top: auto;
+    }
+
+    .counter-intro {
+      font-size: 0.85rem;
+      color: #3a3a3a;
+      margin-bottom: 0.5rem;
+    }
+
+    .counter-display {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.3rem;
+    }
+
+    .counter-display .number {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #2d2d2d;
+    }
+
+    .counter-display .unit {
+      font-size: 0.75rem;
+      color: #666;
+      margin-right: 0.4rem;
+    }
+
+    .counter-display .heart-sep {
+      color: #ff69b4;
+      font-size: 0.8rem;
+      margin: 0 0.2rem;
+    }
+
+    @media (max-width: 500px) {
+      .page {
+        flex-direction: column;
+      }
+      .left-side {
+        padding-right: 0;
+        margin-bottom: 1rem;
+      }
+      .right-side {
+        order: -1;
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="left-side">
+      <div class="text-content">
+        <header class="header">
+          <h1>¿Quieres ser mi SanValentin?</h1>
+        </header>
+        <div class="text-block">
+          <p class="typing-text" id="typingText"></p>
+          <p class="love-note typing-text" id="loveNote"></p>
+        </div>
+      </div>
+
+      <div class="counter-section">
+        <div class="divider"></div>
+        <p class="counter-intro">Mi amor por ti comenzó hace...</p>
+        <div class="counter-display">
+          <span class="number" id="days">365</span><span class="unit">días</span>
+          <span class="heart-sep">❤</span>
+          <span class="number" id="hours">23</span><span class="unit">horas</span>
+          <span class="number" id="minutes">40</span><span class="unit">minutos</span>
+          <span class="number" id="seconds">05</span><span class="unit">segundos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-side">
+      <div class="heart-tree" id="heartTree">
+        <canvas id="treeCanvas" class="tree-canvas" width="240" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Animación de escritura
+    (function () {
+      const text = "Cuanto más tiempo estoy contigo más te amo mi vida eres la razon de mi alegría y mi felicidad y quiero que me permitas ser quien te haga feliz";
+      const typingElement = document.getElementById('typingText');
+      let index = 0;
+
+      function typeWriter() {
+        if (index < text.length) {
+          typingElement.textContent = text.substring(0, index + 1);
+          index++;
+          setTimeout(typeWriter, 50);
+        } else {
+          // Cuando termina el primer texto, empezar con "Te amo"
+          setTimeout(() => {
+            startLoveNote();
+          }, 500);
+        }
+      }
+
+      function startLoveNote() {
+        const loveText = "Te amo mi princesa";
+        const loveElement = document.getElementById('loveNote');
+        let loveIndex = 0;
+
+        function typeLove() {
+          if (loveIndex < loveText.length) {
+            loveElement.textContent = loveText.substring(0, loveIndex + 1);
+            loveIndex++;
+            setTimeout(typeLove, 80);
+          }
+        }
+
+        typeLove();
+      }
+
+      setTimeout(() => {
+        typeWriter();
+      }, 500);
+    })();
+
+    (function () {
+      const startDate = new Date('2023-10-25T00:00:00');
+
+      function pad(n) {
+        return n < 10 ? '0' + n : String(n);
+      }
+
+      function updateCounter() {
+        const now = new Date();
+        const diff = now - startDate;
+
+        if (diff < 0) return;
+
+        const totalSeconds = Math.floor(diff / 1000);
+        const seconds = totalSeconds % 60;
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const minutes = totalMinutes % 60;
+        const totalHours = Math.floor(totalMinutes / 60);
+        const hours = totalHours % 24;
+        const days = Math.floor(totalHours / 24);
+
+        document.getElementById('days').textContent = days;
+        document.getElementById('hours').textContent = pad(hours);
+        document.getElementById('minutes').textContent = pad(minutes);
+        document.getElementById('seconds').textContent = pad(seconds);
+      }
+
+      updateCounter();
+      setInterval(updateCounter, 1000);
+    })();
+
+    // Dibujar árbol con tronco único y ramas orgánicas
+    (function () {
+      const canvas = document.getElementById('treeCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+
+      const COLORS = [
+        '#ff69b4', '#ff1493', '#ff85a2', '#ffb6c1', '#ff6b8a', '#e91e8c',
+        '#ffd700', '#ffeb3b', '#ffc107', '#ffb347', '#ff9800', '#e63946'
+      ];
+
+      const centerX = W / 2;
+      const heartCenterY = 150;
+      // Corazón más gordo y ancho arriba, punta menos fina
+      const heartScaleX = 115; // más ancho
+      const heartScaleY = 88; // un poco más alto
+
+      // Generar polígono del corazón - más ancho arriba, punta menos fina
+      function generateHeartPolygon(cx, cy, scaleX, scaleY, numPoints) {
+        const points = [];
+        for (let i = 0; i < numPoints; i++) {
+          const t = (i / numPoints) * 2 * Math.PI;
+          // Ecuación paramétrica del corazón
+          const px = 16 * Math.pow(Math.sin(t), 3);
+          const py = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+          
+          // Ajustar para hacerlo más ancho arriba y punta menos fina
+          // Si está en la parte superior (py negativo = arriba), hacer más ancho
+          const isTop = py < -5;
+          const isBottom = py > 10;
+          
+          let adjustedPx = px;
+          let adjustedPy = py;
+          
+          if (isTop) {
+            // Hacer más ancho arriba (lóbulos)
+            adjustedPx = px * 1.15;
+          }
+          
+          if (isBottom) {
+            // Hacer la punta más ancha también
+            adjustedPy = py * 0.9;
+            adjustedPx = px * 1.25;
+          }
+          
+          // Agregar pequeñas variaciones para hacerlo menos perfecto
+          const variation = (Math.random() - 0.5) * 2;
+          
+          // Escalar y centrar
+          points.push({
+            x: cx + (adjustedPx + variation * 0.3) * scaleX / 16,
+            y: cy + (adjustedPy + variation * 0.2) * scaleY / 13
+          });
+        }
+        return points;
+      }
+
+      const heartPolygon = generateHeartPolygon(centerX, heartCenterY, heartScaleX, heartScaleY, 120);
+
+      // Función punto-en-polígono (ray casting)
+      function isInsideHeart(x, y, polygon) {
+        let inside = false;
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+          const xi = polygon[i].x, yi = polygon[i].y;
+          const xj = polygon[j].x, yj = polygon[j].y;
+          const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+          if (intersect) inside = !inside;
+        }
+        return inside;
+      }
+
+      // Dibujar un corazón con forma menos simétrica y más natural
+      function drawHeart(ctx, x, y, size, color, alpha = 1, variation = null, rotation = 0) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+        const scale = size * 0.22; // Escala más grande
+        ctx.scale(scale, scale);
+        
+        // Bordes suaves
+        ctx.shadowBlur = 2;
+        ctx.shadowColor = color + '90';
+        
+        // Variaciones más grandes para formas menos simétricas
+        const v1 = variation ? variation.v1 : (Math.random() - 0.5) * 0.15;
+        const v2 = variation ? variation.v2 : (Math.random() - 0.5) * 0.15;
+        const v3 = variation ? variation.v3 : (Math.random() - 0.5) * 0.12;
+        const v4 = variation ? variation.v4 : (Math.random() - 0.5) * 0.12;
+        const asymmetry = variation ? variation.asymmetry : 0.8 + Math.random() * 0.2;
+        
+        ctx.beginPath();
+        // Forma de corazón menos simétrica - lado izquierdo y derecho diferentes
+        ctx.moveTo(0, 0.25 + v1);
+        // Lado izquierdo con variaciones
+        ctx.bezierCurveTo(
+          (-0.5 + v2) * asymmetry, 
+          -0.3 + v1 + v3, 
+          (-1 + v2) * asymmetry, 
+          0.1 + v1, 
+          (-1 + v2) * asymmetry, 
+          0.5 + v1 + v3
+        );
+        ctx.bezierCurveTo(
+          (-1 + v2) * asymmetry, 
+          0.9 + v1, 
+          0, 
+          1.4 + v1 + v4, 
+          0, 
+          1.4 + v1 + v4
+        );
+        // Lado derecho con variaciones diferentes
+        ctx.bezierCurveTo(
+          0, 
+          1.4 + v1 + v4, 
+          (1 - v2) / asymmetry, 
+          0.9 + v1 - v3, 
+          (1 - v2) / asymmetry, 
+          0.5 + v1
+        );
+        ctx.bezierCurveTo(
+          (1 - v2) / asymmetry, 
+          0.1 + v1 - v4, 
+          (0.5 - v2) / asymmetry, 
+          -0.3 + v1 - v3, 
+          0, 
+          0.25 + v1
+        );
+        ctx.closePath();
+        
+        // Relleno sólido
+        ctx.fillStyle = color;
+        ctx.fill();
+        
+        // Borde suave
+        ctx.lineWidth = 0.3;
+        ctx.strokeStyle = color + '80';
+        ctx.stroke();
+        
+        ctx.restore();
+      }
+
+      // UN SOLO TRONCO corto con base ancha que se adelgaza
+      function createTrunk() {
+        const points = [];
+        const startY = H - 5;
+        const endY = heartCenterY + heartScaleY - 5; // Conecta con el corazón más abajo
+        const segments = 18;
+        
+        for (let i = 0; i <= segments; i++) {
+          const t = i / segments;
+          // Curva suave natural
+          const sway = Math.sin(t * Math.PI * 0.3) * 2;
+          // Base más ancha (8px) que se adelgaza hacia arriba (3px)
+          const width = 8 - t * 5;
+          points.push({
+            x: centerX + sway,
+            y: startY - t * (startY - endY),
+            width: width
+          });
+        }
+        return points;
+      }
+
+      // Ramas que nacen del tronco y SUBEN dentro del corazón
+      function createBranches(trunkPoints) {
+        const branches = [];
+        
+        // Punto donde el tronco entra al corazón
+        const entryPoint = trunkPoints[trunkPoints.length - 1];
+        
+        // Rama central que sube por el medio del corazón
+        const centerBranch = [];
+        for (let i = 0; i <= 14; i++) {
+          const t = i / 14;
+          centerBranch.push({
+            x: entryPoint.x + Math.sin(t * Math.PI * 0.5) * 3,
+            y: entryPoint.y - t * 65
+          });
+        }
+        branches.push({ points: centerBranch, width: 3 });
+
+        // Rama izquierda - sube y curva hacia el lóbulo izquierdo
+        const leftBranch = [];
+        for (let i = 0; i <= 18; i++) {
+          const t = i / 18;
+          const curve = Math.sin(t * Math.PI * 0.7);
+          leftBranch.push({
+            x: entryPoint.x - curve * 50,
+            y: entryPoint.y - t * 75
+          });
+        }
+        branches.push({ points: leftBranch, width: 2.5 });
+
+        // Rama derecha - sube y curva hacia el lóbulo derecho
+        const rightBranch = [];
+        for (let i = 0; i <= 18; i++) {
+          const t = i / 18;
+          const curve = Math.sin(t * Math.PI * 0.7);
+          rightBranch.push({
+            x: entryPoint.x + curve * 50,
+            y: entryPoint.y - t * 75
+          });
+        }
+        branches.push({ points: rightBranch, width: 2.5 });
+
+        // Ramita izquierda superior
+        const leftTwig = [];
+        const leftStart = leftBranch[10];
+        for (let i = 0; i <= 10; i++) {
+          const t = i / 10;
+          leftTwig.push({
+            x: leftStart.x - t * 20,
+            y: leftStart.y - t * 25
+          });
+        }
+        branches.push({ points: leftTwig, width: 1.5 });
+
+        // Ramita derecha superior
+        const rightTwig = [];
+        const rightStart = rightBranch[10];
+        for (let i = 0; i <= 10; i++) {
+          const t = i / 10;
+          rightTwig.push({
+            x: rightStart.x + t * 20,
+            y: rightStart.y - t * 25
+          });
+        }
+        branches.push({ points: rightTwig, width: 1.5 });
+
+        return branches;
+      }
+
+      const trunkPoints = createTrunk();
+      const branches = createBranches(trunkPoints);
+
+      // Generar corazones - menos hojas, desordenados pero organizados
+      const hearts = [];
+      const gridSize = 12;
+      const padding = 3;
+      
+      // Grid con más aleatoriedad para aspecto desordenado pero organizado
+      for (let y = heartCenterY - heartScaleY - padding; y <= heartCenterY + heartScaleY + padding; y += gridSize) {
+        for (let x = centerX - heartScaleX - padding; x <= centerX + heartScaleX + padding; x += gridSize) {
+          // Jitter más grande para distribución más desordenada
+          const jitterX = (Math.random() - 0.5) * 4;
+          const jitterY = (Math.random() - 0.5) * 4;
+          const finalX = x + jitterX;
+          const finalY = y + jitterY;
+          
+          if (isInsideHeart(finalX, finalY, heartPolygon)) {
+            // Guardar variación y rotación para cada corazón - girados y desordenados
+            hearts.push({
+              x: finalX,
+              y: finalY,
+              size: 25 + Math.random() * 12,
+              color: COLORS[Math.floor(Math.random() * COLORS.length)],
+              delay: Math.random(),
+              layer: Math.random(),
+              rotation: (Math.random() - 0.5) * Math.PI * 2, // Rotación completa -360° a +360° (totalmente girados)
+              variation: {
+                v1: (Math.random() - 0.5) * 0.15, // Más variación
+                v2: (Math.random() - 0.5) * 0.15,
+                v3: (Math.random() - 0.5) * 0.12, // Variación adicional
+                v4: (Math.random() - 0.5) * 0.12,
+                asymmetry: 0.7 + Math.random() * 0.3 // Asimetría variable
+              }
+            });
+          }
+        }
+      }
+
+      // Separar corazones: más en la capa frontal para cubrir ramas (70% adelante, 30% atrás)
+      const heartsBack = hearts.filter(h => h.layer < 0.3);
+      const heartsFront = hearts.filter(h => h.layer >= 0.3);
+
+      // Dibujar tronco con animación - base ancha que se adelgaza
+      function drawTrunk(progress) {
+        if (progress <= 0) return;
+        
+        const pointCount = Math.floor(trunkPoints.length * progress);
+        if (pointCount < 2) return;
+        
+        // Dibujar el tronco con ancho variable
+        for (let i = 0; i < pointCount - 1; i++) {
+          const curr = trunkPoints[i];
+          const next = trunkPoints[i + 1];
+          const avgWidth = (curr.width + next.width) / 2;
+          
+          ctx.beginPath();
+          ctx.moveTo(curr.x, curr.y);
+          ctx.lineTo(next.x, next.y);
+          ctx.strokeStyle = '#2a9d8f';
+          ctx.lineWidth = avgWidth;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.stroke();
+        }
+      }
+
+      // Dibujar una rama
+      function drawBranch(branch, progress) {
+        if (progress <= 0 || branch.points.length < 2) return;
+        
+        const pointCount = Math.floor(branch.points.length * progress);
+        if (pointCount < 2) return;
+        
+        ctx.beginPath();
+        ctx.moveTo(branch.points[0].x, branch.points[0].y);
+        
+        for (let i = 1; i < pointCount; i++) {
+          const prev = branch.points[i - 1];
+          const curr = branch.points[i];
+          const cpX = (prev.x + curr.x) / 2;
+          const cpY = (prev.y + curr.y) / 2;
+          ctx.quadraticCurveTo(prev.x, prev.y, cpX, cpY);
+        }
+        
+        ctx.strokeStyle = '#2a9d8f';
+        ctx.lineWidth = branch.width;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      }
+
+      // Dibujar corazones
+      function drawHearts(heartsArray, progress) {
+        if (progress <= 0) return;
+        
+        heartsArray.forEach(heart => {
+          const heartProgress = Math.max(0, Math.min(1, (progress - heart.delay * 0.5) / 0.5));
+          if (heartProgress > 0) {
+            const scale = heartProgress * heart.size;
+            const alpha = Math.min(1, heartProgress * 1.5);
+            drawHeart(ctx, heart.x, heart.y, scale, heart.color, alpha, heart.variation, heart.rotation);
+          }
+        });
+      }
+
+      // Animación principal
+      const startTime = Date.now();
+      const trunkDuration = 800;
+      const branchDuration = 1000;
+      const heartsDuration = 1200;
+
+      function animate() {
+        const elapsed = Date.now() - startTime;
+        ctx.clearRect(0, 0, W, H);
+        
+        // 1. Dibujar tronco
+        const trunkProgress = Math.min(1, elapsed / trunkDuration);
+        drawTrunk(trunkProgress);
+        
+        // 2. Corazones de atrás (aparecen primero)
+        let heartsBackProgress = 0;
+        if (elapsed > trunkDuration * 0.5) {
+          heartsBackProgress = Math.min(1, (elapsed - trunkDuration * 0.5) / heartsDuration);
+        }
+        drawHearts(heartsBack, heartsBackProgress);
+        
+        // 3. Dibujar ramas (después del tronco, pero antes de corazones frontales)
+        if (elapsed > trunkDuration * 0.7) {
+          branches.forEach((branch, index) => {
+            const branchDelay = trunkDuration * 0.7 + index * 100;
+            const branchProgress = Math.max(0, Math.min(1, (elapsed - branchDelay) / branchDuration));
+            drawBranch(branch, branchProgress);
+          });
+        }
+        
+        // 4. Corazones de adelante (cubren completamente las ramas - más numerosos)
+        let heartsFrontProgress = 0;
+        if (elapsed > trunkDuration * 0.8) {
+          heartsFrontProgress = Math.min(1, (elapsed - trunkDuration * 0.8) / heartsDuration);
+        }
+        drawHearts(heartsFront, heartsFrontProgress);
+        
+        if (elapsed < trunkDuration + branchDuration + heartsDuration + 500) {
+          requestAnimationFrame(animate);
+        } else {
+          animateIdle();
+        }
+      }
+
+      // Animación sutil cuando está completo
+      let idleTime = 0;
+      function animateIdle() {
+        idleTime += 0.02;
+        ctx.clearRect(0, 0, W, H);
+        
+        // Tronco
+        drawTrunk(1);
+        
+        // Corazones de atrás
+        heartsBack.forEach((heart, i) => {
+          const wobble = Math.sin(idleTime + i * 0.3) * 0.3;
+          drawHeart(ctx, heart.x, heart.y + wobble * 0.3, heart.size, heart.color, 1, heart.variation, heart.rotation);
+        });
+        
+        // Ramas (parcialmente visibles)
+        branches.forEach(branch => {
+          drawBranch(branch, 1);
+        });
+        
+        // Corazones de adelante (cubren las ramas completamente)
+        heartsFront.forEach((heart, i) => {
+          const wobble = Math.sin(idleTime + i * 0.3) * 0.5;
+          const scale = heart.size + wobble * 0.15;
+          drawHeart(ctx, heart.x, heart.y + wobble * 0.4, scale, heart.color, 1, heart.variation, heart.rotation);
+        });
+        
+        requestAnimationFrame(animateIdle);
+      }
+
+      animate();
+    })();
+
+    // Sistema de partículas - corazones cayendo desde diferentes puntos del árbol
+    (function () {
+      const COLORS = ['#ff69b4', '#ff1493', '#ff85a2', '#ffb6c1', '#ff6b8a', '#e91e8c', '#ffd700', '#ffeb3b', '#ffc107', '#ffb347', '#ff9800', '#e63946'];
+      const heartTree = document.getElementById('heartTree');
+      const particles = [];
+
+      function createParticle() {
+        const particle = document.createElement('span');
+        particle.className = 'falling-particle';
+        particle.textContent = '❤';
+        
+        // Color aleatorio
+        const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        particle.style.color = color;
+        
+        // Posición inicial: desde diferentes puntos del árbol (no siempre el mismo lugar)
+        const treeRect = heartTree.getBoundingClientRect();
+        
+        // Distribuir por diferentes zonas del árbol
+        const zone = Math.random();
+        let startX, startY;
+        
+        if (zone < 0.3) {
+          // Lado izquierdo del árbol
+          startX = treeRect.left + Math.random() * treeRect.width * 0.4;
+          startY = treeRect.top + Math.random() * treeRect.height * 0.6;
+        } else if (zone < 0.6) {
+          // Lado derecho del árbol
+          startX = treeRect.left + treeRect.width * 0.6 + Math.random() * treeRect.width * 0.4;
+          startY = treeRect.top + Math.random() * treeRect.height * 0.6;
+        } else {
+          // Centro/arriba del árbol
+          startX = treeRect.left + treeRect.width * 0.3 + Math.random() * treeRect.width * 0.4;
+          startY = treeRect.top + Math.random() * treeRect.height * 0.5;
+        }
+        
+        particle.style.left = startX + 'px';
+        particle.style.top = startY + 'px';
+        
+        // Rotación inicial aleatoria (algunos girados)
+        const initialRotation = (Math.random() - 0.5) * 180; // -90 a +90 grados
+        particle.style.setProperty('--initial-rotation', initialRotation + 'deg');
+        
+        // Duración y delay aleatorios
+        const duration = 3 + Math.random() * 4; // 3-7 segundos
+        const delay = Math.random() * 0.5;
+        
+        // Deriva horizontal variada (unos van más a la izquierda, otros a la derecha)
+        const driftDirection = Math.random() < 0.5 ? -1 : 1;
+        const drift = driftDirection * (30 + Math.random() * 120);
+        particle.style.setProperty('--drift', drift + 'px');
+        
+        // Rotación total durante la caída
+        const totalRotation = 360 + initialRotation + (Math.random() - 0.5) * 180;
+        particle.style.setProperty('--total-rotation', totalRotation + 'deg');
+        
+        particle.style.animation = `fallDown ${duration}s linear ${delay}s forwards`;
+        
+        document.body.appendChild(particle);
+        
+        // Eliminar después de la animación
+        setTimeout(() => {
+          if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+          }
+        }, (duration + delay) * 1000);
+        
+        particles.push(particle);
+      }
+
+      // Crear partículas periódicamente
+      function startParticleSystem() {
+        // Crear una partícula cada 300-800ms
+        function spawnParticle() {
+          createParticle();
+          setTimeout(spawnParticle, 300 + Math.random() * 500);
+        }
+        
+        // Empezar después de que el árbol se forme (2 segundos)
+        setTimeout(() => {
+          spawnParticle();
+        }, 2000);
+      }
+
+      startParticleSystem();
+    })();
+  </script>
+</body>
+</html>
